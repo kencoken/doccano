@@ -76,8 +76,9 @@ class DataDownload(SuperUserMixin, LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         project_id = self.kwargs['project_id']
+        user = self.kwargs.get('user', None)
         project = get_object_or_404(Project, pk=project_id)
-        docs = project.get_documents(is_null=False).distinct()
+        docs = project.get_documents(is_null=False, user=user).distinct()
         filename = '_'.join(project.name.lower().split())
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="{}.csv"'.format(filename)
